@@ -360,13 +360,20 @@ define([
      * var ray = viewer.camera.getPickRay(windowCoordinates);
      * var intersection = globe.pick(ray, scene);
      */
-    Globe.prototype.pick = function(ray, scene, result) {
+	Globe.prototype.pick = function(ray, scene, result) {
+		return this.pickTriangle(ray, scene, false, result);
+	}
+	 
+    Globe.prototype.pickTriangle = function(ray, scene, allData, result) {
         //>>includeStart('debug', pragmas.debug);
         if (!defined(ray)) {
             throw new DeveloperError('ray is required');
         }
         if (!defined(scene)) {
             throw new DeveloperError('scene is required');
+        }
+		if (!defined(allData)) {
+            throw new DeveloperError('allData is required');
         }
         //>>includeEnd('debug');
 
@@ -409,8 +416,9 @@ define([
         var intersection;
         length = sphereIntersections.length;
         for (i = 0; i < length; ++i) {
-            intersection = sphereIntersections[i].pick(ray, scene, true, result);
+            intersection = sphereIntersections[i].pickTriangle(ray, scene, true, allData, result);
             if (defined(intersection)) {
+				if(allData==true){intersection.tile = sphereIntersections[i];}
                 break;
             }
         }

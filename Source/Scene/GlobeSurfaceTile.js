@@ -190,7 +190,11 @@ define([
     var scratchV2 = new Cartesian3();
     var scratchResult = new Cartesian3();
 
-    GlobeSurfaceTile.prototype.pick = function(ray, scene, cullBackFaces, result) {
+	GlobeSurfaceTile.prototype.pick = function(ray, scene, cullBackFaces, result) {
+		return this.pickTriangle(ray, scene, cullBackFaces, false, result);
+	}
+	
+    GlobeSurfaceTile.prototype.pickTriangle = function(ray, scene, cullBackFaces, allData, result) {
         var terrain = this.pickTerrain;
         if (!defined(terrain)) {
             return undefined;
@@ -217,6 +221,7 @@ define([
 
             var intersection = IntersectionTests.rayTriangle(ray, v0, v1, v2, cullBackFaces, scratchResult);
             if (defined(intersection)) {
+				if(allData==true){intersection.v0=v0;intersection.v1=v1;intersection.v2=v2;return intersection;}
                 return Cartesian3.clone(intersection, result);
             }
         }
